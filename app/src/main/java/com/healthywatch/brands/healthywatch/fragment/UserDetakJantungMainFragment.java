@@ -77,7 +77,6 @@ public class UserDetakJantungMainFragment extends Fragment {
         set.setHighLightColor(Color.rgb(190, 190, 190));
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
         set.setValueTextSize(10f);
-        Log.d("","0");
 
         return set;
     }
