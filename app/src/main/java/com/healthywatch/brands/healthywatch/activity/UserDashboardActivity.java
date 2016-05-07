@@ -152,10 +152,14 @@ public class UserDashboardActivity extends AppCompatActivity implements Fragment
     public void onDrawerItemSelected(View view, int position) {
         Log.d("position:",""+position);
         switch (position){
+            case 0:
+                Intent i = new Intent(this,ProfileActivity.class);
+                startActivity(i);
+                break;
             case 5:
                 mref.unauth();
-                Intent i = new Intent(this,AuthenticationActivity.class);
-                startActivity(i);
+                Intent authi = new Intent(this,AuthenticationActivity.class);
+                startActivity(authi);
                 finish();
                 break;
 
