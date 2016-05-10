@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
@@ -130,11 +131,14 @@ public class UserDashboardActivity extends AppCompatActivity implements Fragment
             }
         });
         feedMultiple();
+
+        /** tes pakai Hp, pake emulator pasti null pointer
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
             // Device does not support Bluetooth
         }
         if (!mBluetoothAdapter.isEnabled()) {
+            Toast.makeText(UserDashboardActivity.this, "Aktifkan bluetooth sekarang juga", Toast.LENGTH_LONG).show();
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, 1);
         }
@@ -144,8 +148,15 @@ public class UserDashboardActivity extends AppCompatActivity implements Fragment
                 mDevice = device;
             }
         }
-        mConnectThread = new ConnectThread(mDevice);
-        mConnectThread.start();
+        if(mDevice!=null){
+            mConnectThread = new ConnectThread(mDevice);
+            mConnectThread.start();
+        }
+        else{
+            Toast.makeText(UserDashboardActivity.this, "Tidak ada bluetoth devices", Toast.LENGTH_LONG).show();
+        }
+
+
 
 
         mHandler = new Handler() {
@@ -163,6 +174,7 @@ public class UserDashboardActivity extends AppCompatActivity implements Fragment
                 }
             }
         };
+         **/
 
     }
     private void setupViewPager(ViewPager viewPager) {
