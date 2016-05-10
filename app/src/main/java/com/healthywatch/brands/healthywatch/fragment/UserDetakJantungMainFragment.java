@@ -110,7 +110,7 @@ public class UserDetakJantungMainFragment extends Fragment {
         }
     }
 
-    public void setBPM(int BPM){
+    public void setBPM(String BPM){
         txtBPM.setText(BPM+" BPM");
     }
     @Override

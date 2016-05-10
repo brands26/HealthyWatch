@@ -63,6 +63,7 @@ public class UserDashboardActivity extends AppCompatActivity implements Fragment
     private BluetoothDevice mDevice;
     private ConnectThread mConnectThread;
     private ConnectedThread mConnectedThread;
+    private Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,11 +142,13 @@ public class UserDashboardActivity extends AppCompatActivity implements Fragment
         if (pairedDevices.size() > 0) {
             for (BluetoothDevice device : pairedDevices) {
                 mDevice = device;
-                mConnectThread = new ConnectThread(mDevice);
-                mConnectThread.start();
             }
         }
-        Handler mHandler = new Handler() {
+        mConnectThread = new ConnectThread(mDevice);
+        mConnectThread.start();
+
+
+        mHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 byte[] writeBuf = (byte[]) msg.obj;
@@ -155,12 +158,13 @@ public class UserDashboardActivity extends AppCompatActivity implements Fragment
                     case 1:
                         String writeMessage = new String(writeBuf);
                         writeMessage = writeMessage.substring(begin, end);
+                        mainDetakJantung.setBPM(writeMessage);
                         break;
                 }
             }
         };
-    }
 
+    }
     private void setupViewPager(ViewPager viewPager) {
 
         mainDetakJantung = new UserDetakJantungMainFragment();
@@ -234,7 +238,7 @@ public class UserDashboardActivity extends AppCompatActivity implements Fragment
                                     detakMap.put("detak",""+dpm);
                                     detakMap.put("time",""+ts);
                                     detakref.push().setValue(detakMap);
-                                    mainDetakJantung.setBPM(dpm);
+                                    mainDetakJantung.setBPM(""+dpm);
                                 }
                                 Random rand = new Random();
                                 int n = rand.nextInt(2);
