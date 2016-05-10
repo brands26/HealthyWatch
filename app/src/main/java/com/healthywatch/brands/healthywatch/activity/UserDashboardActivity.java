@@ -1,8 +1,12 @@
 package com.healthywatch.brands.healthywatch.activity;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -31,6 +35,8 @@ import com.healthywatch.brands.healthywatch.fragment.FragmentDrawer;
 import com.healthywatch.brands.healthywatch.fragment.UserDetakJantungMainFragment;
 import com.healthywatch.brands.healthywatch.fragment.UserFitnessMainFragment;
 import com.healthywatch.brands.healthywatch.fragment.UserSuhuMainFragment;
+import com.healthywatch.brands.healthywatch.helper.ConnectThread;
+import com.healthywatch.brands.healthywatch.helper.ConnectedThread;
 import com.healthywatch.brands.healthywatch.helper.SessionHelper;
 
 import java.util.ArrayDeque;
@@ -39,6 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 public class UserDashboardActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener{
 
@@ -52,6 +59,10 @@ public class UserDashboardActivity extends AppCompatActivity implements Fragment
     private List detak = new ArrayList();
     private SessionHelper session;
     private Firebase detakref;
+    private BluetoothAdapter mBluetoothAdapter;
+    private BluetoothDevice mDevice;
+    private ConnectThread mConnectThread;
+    private ConnectedThread mConnectedThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +129,36 @@ public class UserDashboardActivity extends AppCompatActivity implements Fragment
             }
         });
         feedMultiple();
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter == null) {
+            // Device does not support Bluetooth
+        }
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, 1);
+        }
+        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+        if (pairedDevices.size() > 0) {
+            for (BluetoothDevice device : pairedDevices) {
+                mDevice = device;
+                mConnectThread = new ConnectThread(mDevice);
+                mConnectThread.start();
+            }
+        }
+        Handler mHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                byte[] writeBuf = (byte[]) msg.obj;
+                int begin = (int)msg.arg1;
+                int end = (int)msg.arg2;
+                switch(msg.what) {
+                    case 1:
+                        String writeMessage = new String(writeBuf);
+                        writeMessage = writeMessage.substring(begin, end);
+                        break;
+                }
+            }
+        };
     }
 
     private void setupViewPager(ViewPager viewPager) {

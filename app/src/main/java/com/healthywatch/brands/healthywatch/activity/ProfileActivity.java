@@ -1,5 +1,7 @@
 package com.healthywatch.brands.healthywatch.activity;
 
+import android.bluetooth.BluetoothAdapter;
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,6 +29,7 @@ public class ProfileActivity extends AppCompatActivity {
     private EditText inputNama, inputTanggal,inputAlamat, inputAlergi, inputPenyakit, inputDarah, inputBerat, inputTinggi;
     private Firebase profilRef;
     private Firebase readProfilRef;
+    private BluetoothAdapter mBluetoothAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
